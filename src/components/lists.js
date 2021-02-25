@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import TaskRender from './task-render';
 import firebase from '../util/firebase';
 
 export default class Lists extends Component {
@@ -8,7 +7,8 @@ export default class Lists extends Component {
 
     this.state = {
       title: '',
-      description: ''
+      description: '',
+      complete: false
     }
 
     this.handleChange = this.handleChange.bind(this);
@@ -25,14 +25,15 @@ export default class Lists extends Component {
     e.preventDefault();
     const todo = {
       title: this.state.title,
-      description: this.state.description
+      description: this.state.description,
+      complete: this.state.complete
     }
     const todoRef = firebase.database().ref('Todo');
     firebase.database().ref('Todo').push(todo);
-    this.setState ({
+    this.setState({
       title: '',
       description: ''
-    })
+    });
   }
 
   render() {
@@ -55,8 +56,8 @@ export default class Lists extends Component {
           />
           <button onClick={this.handleSubmit}>Save</button>
         </form>
-        <TaskRender />
+        
       </div>
-    )
+    );
   }
 }
