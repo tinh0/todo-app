@@ -3,7 +3,7 @@ import {
   faTrash,
   faEdit,
   faCheckSquare,
-  faCircle
+  faCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 
@@ -13,7 +13,7 @@ const Icons = () => {
     faEdit,
     faCheckSquare,
     faCircle,
-    faCircleRegular
+    faCircleRegular,
   )
 };
 

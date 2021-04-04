@@ -4,12 +4,13 @@ import App from './app';
 
 import 'bootstrap/dist/css/bootstrap.css';
 import './styles/main.scss';
+import { BrowserRouter } from 'react-router-dom';
+
+import './index.css';
 
 ReactDOM.render(
-  <React.StrictMode>
+  <BrowserRouter>
     <App />
-  </React.StrictMode>,
+  </BrowserRouter>,
   document.getElementById('root')
 );
-
-

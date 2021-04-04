@@ -1,28 +1,48 @@
-import React, { useEffect, useState } from 'react';
-import firebase from '../util/firebase';
+import React, { Component } from 'react';
+import { firestore } from '../firebase/firebase.utils';
+
 import Todo from './todo';
 import Progress from './progress';
 
-export default function TaskRender() {
-  const [todoList, setTodoList] = useState();
-  useEffect(() => {
-    const todoRef = firebase.database().ref('Todo');
-    todoRef.on('value', (snapshot) => {
-      const todos = snapshot.val();
-      const todoList = [];
-      for (let id in todos) {
-        todoList.push({ id, ...todos[id] });
-      }
-      setTodoList(todoList);
-    });
-  }, []);
+export default class TaskRender extends Component {
+  constructor(props) {
+    super(props);
 
-  return (
-    <div>
-      <Progress todoList={todoList} />
-      {todoList
-        ? todoList.map((todo, index) => <Todo todo={todo} key={index} />)
-        : ''}
-    </div>
-  )
+    this.state = {
+      todoList: []
+    }
+  }
+
+  componentDidMount() {
+    if (this.props.currentUser === null) return null;
+    const todoRef = firestore.collection(`users/${this.props.currentUser.id}/todos`);
+
+    todoRef.onSnapshot((querySnapshot) => {
+      const todoList = [];
+      querySnapshot.forEach((doc) => {
+        const todoData = doc.data();
+        todoData.ids = doc.id;
+        console.log(todoData);
+        todoList.push(todoData);
+      });
+      todoList.sort((a, b) => a.createdAt.seconds - b.createdAt.seconds);
+      this.setState({
+        todoList: todoList
+      })
+      console.log('Todolists', todoList);
+    });
+  }
+
+  render() {
+    return (
+      <div>
+        <Progress todoList={this.state.todoList} />
+        {this.state.todoList
+          ? this.state.todoList.map((todo, index) => (
+              <Todo todo={todo} key={index} currentUser={this.props.currentUser} />
+            ))
+          : ''}
+      </div>
+    );
+  }
 }

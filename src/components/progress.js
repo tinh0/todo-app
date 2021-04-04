@@ -4,9 +4,6 @@ import ProgressBar from 'react-bootstrap/ProgressBar';
 export default class Progress extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-    
-    }
     this.handleProgressBar = this.handleProgressBar.bind(this);
     this.handleProgressUpdate = this.handleProgressUpdate.bind(this);
   }

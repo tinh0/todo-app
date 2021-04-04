@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
-import firebase from '../util/firebase';
+import { firestore } from '../../firebase/firebase.utils';
 
-export default class Lists extends Component {
+export default class AddTodo extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      ids: '',
       title: '',
       description: '',
-      complete: false
-    }
+      complete: false,
+    };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -17,22 +18,28 @@ export default class Lists extends Component {
 
   handleChange(event) {
     this.setState({
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
     });
   }
 
   handleSubmit(e) {
     e.preventDefault();
     const todo = {
+      createdAt: new Date(),
+      ids: this.state.ids,
       title: this.state.title,
       description: this.state.description,
-      complete: this.state.complete
-    }
-    const todoRef = firebase.database().ref('Todo');
-    firebase.database().ref('Todo').push(todo);
+      complete: this.state.complete,
+    };
+    const todoRef = firestore.collection(
+      `users/${this.props.currentUser.id}/todos`
+    );
+    todoRef.add(todo).then((docRef) => {
+      console.log('Document written with ID: ', docRef.id);
+    });
     this.setState({
       title: '',
-      description: ''
+      description: '',
     });
   }
 
@@ -41,22 +48,21 @@ export default class Lists extends Component {
       <div>
         <form>
           <input
-            type="text"
-            name="title"
-            placeholder="task name"
+            type='text'
+            name='title'
+            placeholder='task name'
             value={this.state.title}
             onChange={this.handleChange}
           />
           <input
-            type="text"
-            name="description"
-            placeholder="task description"
+            type='text'
+            name='description'
+            placeholder='task description'
             value={this.state.description}
             onChange={this.handleChange}
           />
           <button onClick={this.handleSubmit}>Save</button>
         </form>
-        
       </div>
     );
   }
